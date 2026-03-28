@@ -1,0 +1,16 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Dependencies and builds
+node_modules/
+dist/
+build/
+
+# Logs and coverage
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+coverage/

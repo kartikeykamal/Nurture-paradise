@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin — Nurture Paradise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/admin.css"/>
+<script type="module" src="js/firebase.js"></script>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- ══ LOGIN PAGE ══ -->
+<div id="admin-login" style="display:none">
+  <div class="login-box">
+    <div class="login-brand">
+      <svg width="22" height="22" viewBox="0 0 28 28" fill="none" style="color:var(--green)">
+        <path d="M14 26C14 26 13.4 18 14.6 13C15.8 8 13 3 14 1C15 3 17 8 14.6 13C15.8 18 14 26 14 26Z" fill="currentColor"/>
+        <path d="M14 15C11.5 11 6 8.5 3.5 5C8 7 13 11.5 14 14.5Z" fill="currentColor"/>
+        <path d="M14 12C16.5 8 21 5.5 23.5 2C19 4 14 8.5 14 11.5Z" fill="currentColor"/>
+      </svg>
+      <span class="brand-name brand-admin"><span class="brand-word">Nurture</span><span class="brand-word">Paradise</span></span>
+      <span class="brand-pill">Admin</span>
+    </div>
+    <h2 class="login-title">Admin Panel</h2>
+    <p class="login-sub">Sign in with your admin account to manage Nurture Paradise.</p>
+    <div id="login-error" class="login-error"></div>
+    <div class="field-wrap" style="margin-bottom:20px">
+      <label class="field-label">Email address</label>
+      <input class="field-input" id="login-email" type="email" placeholder="admin@example.com" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
+    </div>
+    <div class="field-wrap" style="margin-bottom:24px">
+      <label class="field-label">Password</label>
+      <input class="field-input" id="login-pwd" type="password" placeholder="Your password" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
+    </div>
+    <button class="login-btn" id="login-btn" type="button" onclick="doAdminLogin()">Sign in to Admin</button>
+    <a class="login-back" href="index.html">← Back to Nurture Paradise</a>
+  </div>
+</div>
+
+<!-- ══ ADMIN LAYOUT ══ -->
+<div id="admin-layout" style="display:none;width:100%;min-height:100vh">
+
+  <!-- SIDEBAR -->
+  <aside id="admin-sidebar">
+    <div class="sidebar-brand">
+      <svg class="sidebar-brand-icon" viewBox="0 0 28 28" fill="none">
+        <path d="M14 26C14 26 13.4 18 14.6 13C15.8 8 13 3 14 1C15 3 17 8 14.6 13C15.8 18 14 26 14 26Z" fill="currentColor"/>
+        <path d="M14 15C11.5 11 6 8.5 3.5 5C8 7 13 11.5 14 14.5Z" fill="currentColor"/>
+        <path d="M14 12C16.5 8 21 5.5 23.5 2C19 4 14 8.5 14 11.5Z" fill="currentColor"/>
+      </svg>
+      <span class="brand-name brand-admin"><span class="brand-word">Nurture</span><span class="brand-word">Paradise</span></span>
+      <span class="brand-pill">Admin</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Overview</div>
+      <button class="sidebar-link" data-view="dashboard" onclick="navigateTo('dashboard')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </button>
+      <button class="sidebar-link" data-view="analytics" onclick="navigateTo('analytics')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Analytics
+      </button>
+
+      <div class="sidebar-section-label">Manage</div>
+      <button class="sidebar-link" data-view="products" onclick="navigateTo('products')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Products
+      </button>
+      <button class="sidebar-link" data-view="plants" onclick="navigateTo('plants')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22V12"/><path d="M12 12C12 12 8 8.5 4 8c2 4 5 6 8 4z"/><path d="M12 12C12 12 16 8.5 20 8c-2 4-5 6-8 4z"/></svg>
+        Plant Database
+      </button>
+      <button class="sidebar-link" data-view="users" onclick="navigateTo('users')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Users
+      </button>
+
+      <div class="sidebar-section-label">Activity</div>
+      <button class="sidebar-link" data-view="orders" onclick="navigateTo('orders')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Orders
+      </button>
+      <button class="sidebar-link" data-view="diagnoses" onclick="navigateTo('diagnoses')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        AI Diagnoses
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.7);font-weight:500" id="sidebar-admin-email">Admin</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:2px">Administrator</div>
+      </div>
+      <button class="sidebar-logout" onclick="doAdminLogout()">Sign out</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div id="admin-main">
+
+    <!-- Header -->
+    <header class="admin-header">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="hamburger" id="hamburger" onclick="document.getElementById('admin-sidebar').classList.toggle('open')">
+          <span></span><span></span><span></span>
+        </button>
+        <h1 class="admin-header-title" id="header-title">Dashboard</h1>
+      </div>
+      <div class="admin-header-right">
+        <a href="index.html" style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-faint);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--ink-faint)'">View Site →</a>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">
+          <div class="theme-toggle-knob">🌿</div>
+        </button>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="admin-content">
+
+      <!-- ── DASHBOARD ── -->
+      <div class="admin-view active" id="view-dashboard">
+        <div class="stat-grid">
+          <div class="stat-card green">
+            <div class="stat-label">Registered Users</div>
+            <div class="stat-value" id="stat-users">—</div>
+            <div class="stat-sub">Firebase Auth accounts</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Plants in Gardens</div>
+            <div class="stat-value" id="stat-gardens">—</div>
+            <div class="stat-sub">Across all user gardens</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Shop Products</div>
+            <div class="stat-value" id="stat-products">—</div>
+            <div class="stat-sub">Active products in store</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Cart Items</div>
+            <div class="stat-value" id="stat-cart">—</div>
+            <div class="stat-sub">Across all active carts</div>
+          </div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card" style="grid-column:1/-1">
+            <div class="chart-title">Recent Registered Users</div>
+            <div class="mini-list" id="recent-users">
+              <p style="font-size:13px;color:var(--ink-faint);padding:16px 0">Loading…</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ANALYTICS ── -->
+      <div class="admin-view" id="view-analytics">
+        <div class="stat-grid" id="analytics-stats">
+          <div class="stat-card"><div class="stat-label">Loading…</div><div class="stat-value">—</div></div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">🌱 Most Added Plants</div>
+            <div class="bar-chart" id="chart-top-plants">
+              <p style="font-size:13px;color:var(--ink-faint)">Loading…</p>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">📂 Popular Categories</div>
+            <div class="bar-chart" id="chart-categories">
+              <p style="font-size:13px;color:var(--ink-faint)">Loading…</p>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">📍 Users by City</div>
+            <div class="mini-list" id="chart-cities">
+              <p style="font-size:13px;color:var(--ink-faint)">Loading…</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PRODUCTS ── -->
+      <div class="admin-view" id="view-products">
+        <div class="section-head">
+          <h2>Shop Products <span id="product-count" style="font-size:14px;font-family:var(--font-sans);color:var(--ink-faint);font-weight:400;margin-left:8px"></span>
+            <span id="product-sync-badge" style="display:none;margin-left:10px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:rgba(122,193,122,.15);color:var(--acid);border:1px solid rgba(122,193,122,.3);padding:3px 9px;border-radius:100px;font-family:var(--font-sans);font-weight:600;vertical-align:middle;">✓ Live on site</span>
+          </h2>
+          <div class="section-head-right">
+            <input class="search-input" style="max-width:220px" placeholder="Search products…" oninput="filterProducts(this.value)"/>
+            <button class="btn-primary" onclick="openAddProduct()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Product
+            </button>
+          </div>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Photo</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+            <tbody id="products-tbody"><tr><td colspan="6" style="text-align:center;padding:40px;color:var(--ink-faint)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── PLANTS ── -->
+      <div class="admin-view" id="view-plants">
+        <div class="section-head">
+          <h2>Plant Database <span id="plant-admin-count" style="font-size:14px;font-family:var(--font-sans);color:var(--ink-faint);font-weight:400;margin-left:8px"></span>
+            <span id="plant-sync-badge" style="display:none;margin-left:10px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:rgba(122,193,122,.15);color:var(--acid);border:1px solid rgba(122,193,122,.3);padding:3px 9px;border-radius:100px;font-family:var(--font-sans);font-weight:600;vertical-align:middle;">✓ Live on site</span>
+          </h2>
+          <div class="section-head-right">
+            <input class="search-input" id="plant-search" style="max-width:200px" placeholder="Search plants…" oninput="filterPlants(this.value)"/>
+            <select class="filter-select" onchange="filterPlantCat(this.value)">
+              <option value="">All Categories</option>
+              <option value="indoor">Indoor</option>
+              <option value="outdoor">Outdoor</option>
+              <option value="edible">Edible</option>
+              <option value="medicinal">Medicinal</option>
+              <option value="flowering">Flowering</option>
+              <option value="succulent">Succulent</option>
+              <option value="tropical">Tropical</option>
+              <option value="medicinal">Medicinal</option>
+            </select>
+            <button class="btn-primary" onclick="openAddPlant()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Plant
+            </button>
+          </div>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Photo</th><th>Name</th><th>Categories</th><th>Difficulty</th><th>Actions</th></tr></thead>
+            <tbody id="plants-tbody"><tr><td colspan="5" style="text-align:center;padding:40px;color:var(--ink-faint)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── USERS ── -->
+      <div class="admin-view" id="view-users">
+        <div class="section-head">
+          <h2>Users <span id="user-count" style="font-size:14px;font-family:var(--font-sans);color:var(--ink-faint);font-weight:400;margin-left:8px"></span></h2>
+          <input class="search-input" style="max-width:240px" placeholder="Search by name or email…" oninput="filterUsers(this.value)"/>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>User</th><th>Role</th><th>City</th><th>Onboarded</th><th>Actions</th></tr></thead>
+            <tbody id="users-tbody"><tr><td colspan="5" style="text-align:center;padding:40px;color:var(--ink-faint)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── ORDERS ── -->
+      <div class="admin-view" id="view-orders">
+        <div class="section-head">
+          <h2>Orders <span id="order-count" style="font-size:14px;font-family:var(--font-sans);color:var(--ink-faint);font-weight:400;margin-left:8px"></span></h2>
+          <div class="section-head-right">
+            <select class="filter-select" id="order-status-filter" onchange="filterOrdersByStatus(this.value)">
+              <option value="">All statuses</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="dispatched">Dispatched</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <input class="search-input" style="max-width:220px" placeholder="Search name, email, order ID…" oninput="filterOrdersSearch(this.value)"/>
+          </div>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Order ID</th><th>Customer</th><th>Delivery Address</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody id="orders-tbody"><tr><td colspan="8" style="text-align:center;padding:40px;color:var(--ink-faint)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── DIAGNOSES ── -->
+      <div class="admin-view" id="view-diagnoses">
+        <div class="section-head">
+          <h2>AI Diagnosis History <span id="diag-count" style="font-size:14px;font-family:var(--font-sans);color:var(--ink-faint);font-weight:400;margin-left:8px"></span></h2>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>User</th><th>Type</th><th>AI Result (Preview)</th><th>Date</th></tr></thead>
+            <tbody id="diag-tbody"><tr><td colspan="4" style="text-align:center;padding:40px;color:var(--ink-faint)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /admin-content -->
+  </div><!-- /admin-main -->
+</div><!-- /admin-layout -->
+
+<!-- ══ PRODUCT MODAL ══ -->
+<div class="modal-overlay" id="product-modal" style="display:none" onclick="if(event.target===this)closeModal('product-modal')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 class="modal-title" id="product-modal-title">Add Product</h3>
+      <button class="modal-close" onclick="closeModal('product-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="product-id-field"/>
+      <form id="product-form" onsubmit="return false">
+        <div class="form-grid" style="gap:16px">
+          <div class="field-wrap form-row">
+            <label class="field-label">Product Name *</label>
+            <input class="field-input" id="product-name" type="text" placeholder="e.g. Organic Compost 5kg"/>
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Category *</label>
+            <select class="field-select" id="product-cat">
+              <option value="">Select category</option>
+              <option value="Soil">Soil</option>
+              <option value="Planters">Planters</option>
+              <option value="Tools">Tools</option>
+              <option value="Fertilisers">Fertilisers</option>
+              <option value="Care">Care</option>
+              <option value="Seeds">Seeds</option>
+              <option value="Accessories">Accessories</option>
+            </select>
+          </div>
+            <div class="field-wrap">
+              <label class="field-label">Image URL</label>
+              <input class="field-input" id="product-img" type="url" placeholder="https://…"/>
+            </div>
+          <div class="field-wrap">
+            <label class="field-label">Emoji Icon</label>
+            <input class="field-input" id="product-sym" type="text" placeholder="e.g. 🌱" maxlength="4"/>
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Price (₹) *</label>
+            <input class="field-input" id="product-price" type="number" placeholder="299" min="1"/>
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Stock</label>
+            <input class="field-input" id="product-stock" type="number" placeholder="50" min="0"/>
+          </div>
+          <div class="field-wrap form-row">
+            <label class="field-label">Description</label>
+            <textarea class="field-textarea" id="product-desc" placeholder="Brief product description…"></textarea>
+          </div>
+        </div>
+      </form>
+      <div class="product-preview-card" id="product-preview">
+        <div class="pp-photo">
+          <img id="pp-img" src="" alt="" onerror="this.style.display='none';document.getElementById('pp-fallback').style.display='flex'"/>
+          <div class="pp-fallback" id="pp-fallback">🌱</div>
+        </div>
+        <div class="pp-meta">
+          <div class="pp-cat" id="pp-cat">Category</div>
+          <div class="pp-name" id="pp-name">New Product</div>
+          <div class="pp-desc" id="pp-desc">Description preview</div>
+          <div class="pp-price-stock">
+            <span class="pp-price" id="pp-price">₹0</span>
+            <span class="pp-stock" id="pp-stock">Stock: 0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('product-modal')">Cancel</button>
+      <button class="btn-primary" onclick="saveProduct()">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PLANT MODAL ══ -->
+<div class="modal-overlay" id="plant-modal" style="display:none" onclick="if(event.target===this)closeModal('plant-modal')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 class="modal-title" id="plant-modal-title">Add Plant</h3>
+      <button class="modal-close" onclick="closeModal('plant-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="plant-id-field"/>
+      <form id="plant-form" onsubmit="return false">
+        <div class="form-grid" style="gap:16px">
+          <div class="field-wrap">
+            <label class="field-label">Common Name *</label>
+            <input class="field-input" id="plant-common" type="text" placeholder="e.g. Monstera"/>
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Scientific Name *</label>
+            <input class="field-input" id="plant-latin" type="text" placeholder="e.g. Monstera deliciosa" style="font-style:italic"/>
+          </div>
+          <div class="field-wrap form-row">
+            <label class="field-label">Photo URL (Wikimedia preferred)</label>
+            <input class="field-input" id="plant-img" type="url" placeholder="https://upload.wikimedia.org/..."/>
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Watering Frequency</label>
+            <input class="field-input" id="plant-water" type="text" placeholder="e.g. Weekly"/>
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Sunlight</label>
+            <input class="field-input" id="plant-sun" type="text" placeholder="e.g. Bright indirect"/>
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Difficulty</label>
+            <select class="field-select" id="plant-diff">
+              <option value="Easy">Easy</option>
+              <option value="Moderate">Moderate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Categories (comma separated)</label>
+            <input class="field-input" id="plant-cats" type="text" placeholder="indoor, tropical, flowering"/>
+          </div>
+          <div class="field-wrap form-row">
+            <label class="field-label">Care Tips (one per line)</label>
+            <textarea class="field-textarea" id="plant-tips" placeholder="Tip 1&#10;Tip 2&#10;Tip 3" style="min-height:100px"></textarea>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('plant-modal')">Cancel</button>
+      <button class="btn-primary" onclick="savePlant()">Save Plant</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/plants.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
